@@ -26,7 +26,6 @@ class GameWindow < Gosu::Window
   end
 
   def update
-    @player.angle += 1
 
     @entities.each do | entity |
       entity.tick
@@ -34,7 +33,6 @@ class GameWindow < Gosu::Window
   end
 
   def draw
-
     @entities.each do | entity |
       entity.draw
     end
@@ -57,7 +55,6 @@ class Entity
     # Hacks!
     @x = 0 if @x >= GameWindow.width     
     @y = 0 if @y >= GameWindow.height
- 
   end
 
 end
@@ -75,6 +72,12 @@ class Player < Entity
 
     @x_velocity = 1
     @y_velocity = 1
+  end
+
+  def tick
+    @angle += 1
+
+    super()
   end
 
   def draw
