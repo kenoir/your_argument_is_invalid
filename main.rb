@@ -1,23 +1,68 @@
 require 'gosu'
 
 class GameWindow < Gosu::Window
+
+  attr :entities
+  attr :width
+  attr :height
+
+  def self.height
+    480
+  end
+
+  def self.width
+    640
+  end
+
   def initialize
-    super 640, 480, false
+    super GameWindow.width, GameWindow.height, false
     self.caption = "Your argument is INVALID"
 
+    @entities = []
+
     @player = Player.new(self)
+
+    @entities.push(@player)
   end
 
   def update
     @player.angle += 1
+
+    @entities.each do | entity |
+      entity.tick
+    end
   end
 
   def draw
-    @player.draw
+
+    @entities.each do | entity |
+      entity.draw
+    end
   end
+
 end
 
-class Player
+class Entity 
+
+  attr :x,true
+  attr :y,true
+
+  attr :x_velocity,true
+  attr :y_velocity
+
+  def tick
+    @x += @x_velocity
+    @y += @y_velocity
+
+    # Hacks!
+    @x = 0 if @x >= GameWindow.width     
+    @y = 0 if @y >= GameWindow.height
+ 
+  end
+
+end
+
+class Player < Entity
 
   attr :angle, true
 
@@ -27,6 +72,9 @@ class Player
     
     @x = 320
     @y = 240
+
+    @x_velocity = 1
+    @y_velocity = 1
   end
 
   def draw
