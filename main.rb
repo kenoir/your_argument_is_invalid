@@ -23,6 +23,8 @@ class GameWindow < Gosu::Window
     @player = Player.new(self)
 
     @entities.push(@player)
+
+    @last_clicked_mouse_location = {} 
   end
 
   def update
@@ -36,6 +38,19 @@ class GameWindow < Gosu::Window
     @entities.each do | entity |
       entity.draw
     end
+  end
+
+  def button_down(id)
+    case id
+    when Gosu::MsLeft
+      @last_clicked_mouse_location = { :x  => mouse_x, :y => mouse_y }
+      teleport_player_to @last_clicked_mouse_location
+    end
+  end
+
+  def teleport_player_to(location)
+    @player.exclaim
+    @player.move_to location 
   end
 
 end
@@ -64,6 +79,7 @@ class Player < Entity
   attr :angle, true
 
   def initialize(window)
+    @sound = Gosu::Sample.new(window, "media/steal.wav")
     @image = Gosu::Image.new(window, "media/nick_cage.jpeg", false)
     @angle = 0 
     
@@ -78,6 +94,16 @@ class Player < Entity
     @angle += 1
 
     super()
+  end
+
+  def move_to(location)
+    @x = location[:x]
+    @y = location[:y]
+    draw
+  end
+
+  def exclaim
+    @sound.play
   end
 
   def draw
